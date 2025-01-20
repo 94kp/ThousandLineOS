@@ -17,6 +17,9 @@ void printf(const char *fmt, ...)
             {
                 case '\0':
                     putchar('%');
+                    goto end;
+                case '%':
+                    putchar('%');
                     break;
                 case 's':
                     {
@@ -30,18 +33,25 @@ void printf(const char *fmt, ...)
                     }
                 case 'd':
                     {
-                    int value = va_arg(vargs, int);
-                    if (value < 0)
-                    {
-                        putchar('-');
-                        value = -value;
-                    }
+                        int value = va_arg(vargs, int);
+                        if (value < 0)
+                        {
+                            putchar('-');
+                            value = -value;
+                        }
 
-                    int divisor = 1;
-                    while(value / divisor > 9)
-                        divisor *= 10;
+                        int divisor = 1;
+                        while(value / divisor > 9)
+                            divisor *= 10;
+
+                        while (divisor > 0)
+                        {
+                            putchar('0' + value / divisor);
+                            value %= divisor;
+                            divisor /= 10;
+                        }
+                        break;
                     }
-                    break;
                 case 'x':
                     {
                         int value = va_arg(vargs, int);
@@ -52,17 +62,17 @@ void printf(const char *fmt, ...)
                         }
                     }
             }
+        }
 
-    }
         else
         {
             putchar(*fmt);
         }
 
         fmt++;
-}
-    end:
-        va_end(vargs);
     }
+end:
+    va_end(vargs);
+}
 
 
